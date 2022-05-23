@@ -8,10 +8,29 @@
             toolbar: {!! $chart->toolbar() !!},
             zoom: {!! $chart->zoom() !!},
             fontFamily: '{!! $chart->fontFamily() !!}',
-            foreColor: '{!! $chart->foreColor() !!}'
+            foreColor: '{!! $chart->foreColor() !!}',
+            events: {
+                animationEnd: function (chartContext){
+                    chartContext.dataURI().then(({ imgURI, blob }) => {
+                        chartsDataURIs['{!! $chart->chartKey() !!}'] = imgURI;
+                    });
+                },
+                /*beforeMount: function (chartContext){
+                    console.log("beforeMount"+chartContext.paper().svg())
+                },
+                mounted: function (chartContext){
+                    console.log("Mounted"+chartContext.paper().svg())
+                },*/
+                updated: function (chartContext){
+                    chartContext.dataURI().then(({ imgURI, blob }) => {
+                        chartsDataURIs['{!! $chart->chartKey() !!}'] = imgURI;
+                    });
+                },
+            }
         },
         plotOptions: {
-            bar: {!! $chart->horizontal() !!}
+            bar: {!! $chart->horizontal() !!},
+            radialBar: {!! $chart->radialBar() !!}
         },
         colors: {!! $chart->colors() !!},
         series: {!! $chart->dataset() !!},
@@ -34,9 +53,14 @@
         @if($chart->stroke())
             stroke: {!! $chart->stroke() !!},
         @endif
+        noData: {
+            text: "N/A",
+            align: "center",
+            verticalAlign: "middle",
+        },
     }
 
     var chart = new ApexCharts(document.querySelector("#{!! $chart->id() !!}"), options);
     chart.render();
-
+    charts.push(chart);
 </script>
