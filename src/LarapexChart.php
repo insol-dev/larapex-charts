@@ -28,6 +28,7 @@ class LarapexChart
     protected $width;
     protected $colors;
     protected $horizontal;
+    protected $radialBar = "{}";
     protected $xAxis;
     protected $grid;
     protected $markers;
@@ -35,6 +36,7 @@ class LarapexChart
     protected $toolbar;
     protected $zoom;
     protected $dataLabels;
+    protected $chartKey;
     private $chartLetters = 'abcdefghijklmnopqrstuvwxyz';
 
     /*
@@ -163,9 +165,37 @@ class LarapexChart
         return $this;
     }
 
-    public function setHorizontal(bool $horizontal) :LarapexChart
+    public function setHorizontal(bool $horizontal,int $borderRadius, bool $distributed, string $barHeight) :LarapexChart
     {
-        $this->horizontal = json_encode(['horizontal' => $horizontal]);
+        $this->horizontal = json_encode([
+            'horizontal' => $horizontal,
+            'borderRadius' => $borderRadius,
+            'distributed' => $distributed,
+            'barHeight' => $barHeight
+        ]);
+        return $this;
+    }
+
+    public function setRadialBar(bool $show,int $offsetY,string $fontSize,string $color,string $backgroundColor,string $hollowSize) :LarapexChart
+    {
+        $this->radialBar = json_encode([
+            'dataLabels' => [
+                                'name' => [
+                                    'show' => $show
+                                    ],
+                                'value' => [
+                                    'offsetY' => $offsetY,
+                                    'fontSize' => $fontSize,
+                                    'color' => $color
+                                    ],
+                            ],
+            'track' => [
+                'background' => $backgroundColor
+            ],
+            'hollow' => [
+                'size' => $hollowSize,
+                ]
+        ]);
         return $this;
     }
 
@@ -254,6 +284,12 @@ class LarapexChart
     public function setDataLabels(bool $enabled = true) :LarapexChart
     {
         $this->dataLabels = json_encode(['enabled' => $enabled]);
+        return $this;
+    }
+
+    public function setChartKey(string $chartKey = '') :LarapexChart
+    {
+        $this->chartKey = $chartKey;
         return $this;
     }
 
@@ -400,6 +436,14 @@ class LarapexChart
     /**
      * @return mixed
      */
+    public function radialBar()
+    {
+        return $this->radialBar;
+    }
+
+    /**
+     * @return mixed
+     */
     public function xAxis()
     {
         return $this->xAxis;
@@ -453,6 +497,14 @@ class LarapexChart
         return $this->dataLabels;
     }
 
+    /**
+     * @return string
+     */
+    public function chartKey()
+    {
+        return $this->chartKey;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | JSON Helper
@@ -473,6 +525,7 @@ class LarapexChart
             ],
             'plotOptions' => [
                 'bar' => json_decode($this->horizontal()),
+                'radialBar' => json_decode($this->radialBar())
             ],
             'colors' => json_decode($this->colors()),
             'series' => json_decode($this->dataset()),
@@ -489,6 +542,14 @@ class LarapexChart
             ],
             'grid' => json_decode($this->grid()),
             'markers' => json_decode($this->markers()),
+            'responsive'=> [
+                    'breakpoint' => 1500,
+                    'options' => [
+                    'chart' => [
+                        'height'=> '200px'
+                        ]
+                    ]
+            ]
         ];
 
         if($this->labels()) {
@@ -517,6 +578,7 @@ class LarapexChart
             ],
             'plotOptions' => [
                 'bar' => json_decode($this->horizontal()),
+                'radialBar' => json_decode($this->radialBar())
             ],
             'colors' => json_decode($this->colors()),
             'dataLabels' => json_decode($this->dataLabels()),
