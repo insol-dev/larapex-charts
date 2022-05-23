@@ -1,5 +1,5 @@
 {
-    "name": "insol/larapex-charts",
+    "name": "arielmejiadev/larapex-charts",
     "description": "Package to provide easy api to build apex charts on Laravel",
     "keywords": [
         "arielmejiadev",
@@ -7,6 +7,15 @@
         "charts",
         "apexcharts"
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/insol-dev/larapex-charts"
+        }
+    ],
+    "require": {
+        "arielmejiadev/larapex-charts": "dev-insol"
+    },
     "homepage": "https://larapex-charts.netlify.app/",
     "license": "MIT",
     "type": "library",
